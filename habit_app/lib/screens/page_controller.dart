@@ -73,6 +73,7 @@ class _MyPageControllerState extends State<MyPageController> {
           ),
           Padding(
             padding: const EdgeInsets.only(bottom: 30.0),
+            // add habit button
             child: FloatingActionButton(
               backgroundColor: Colors.black,
               onPressed: () {
