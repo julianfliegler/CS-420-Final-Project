@@ -1,17 +1,9 @@
-class Goal {
-  int? quantity;
-  String? unit;
-  // days of the week
-  //Week week; //???
-  // week = Week(
-  //   monday: false,
-  //   tuesday: false,
-  //   wednesday: false,
-  //   thursday: false,
-  //   friday: false,
-  //   saturday: false,
-  //   sunday: false,
-  // );
+import 'package:habit_app/all.dart';
 
-  Goal({this.quantity, this.unit});
+class Goal {
+  String? quantity;
+  String? unit;
+  Calendar calendarView = Calendar.day;
+  Set<DayTime> daytimeSelection = <DayTime>{DayTime.Morning};
+  Set<Week> weekSelection = <Week>{Week.M};
 }

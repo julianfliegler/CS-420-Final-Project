@@ -1,7 +1,6 @@
+import 'package:habit_app/all.dart';
+
 class Reminder {
   String? time;
-  String? days;
-  bool? isOn;
-
-  Reminder({this.time, this.days, this.isOn});
+  Set<Week> weekSelection = <Week>{Week.M};
 }

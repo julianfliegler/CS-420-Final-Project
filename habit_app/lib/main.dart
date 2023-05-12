@@ -21,7 +21,9 @@ class MyApp extends StatelessWidget {
       // round corners
       shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(28))),
-      onPressed: () => Navigator.pop(context),
+      onPressed: () {
+        Navigator.pop(context);
+      },
       backgroundColor: Colors.black,
       child: const Icon(Icons.done, color: Colors.white),
     );

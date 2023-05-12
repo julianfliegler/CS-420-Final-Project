@@ -20,8 +20,30 @@ export 'models/reward.dart';
 // widgets
 export 'widgets/habit_widget.dart';
 export 'widgets/blank_widget.dart';
-export 'widgets/frequency_segment.dart';
+// export 'widgets/frequency_segment.dart';
 export 'widgets/timeperiod_segment.dart';
 export 'widgets/week_segment.dart';
 
 export 'main.dart';
+export 'utils.dart';
+
+enum Calendar {
+  day,
+  week,
+}
+
+enum DayTime {
+  Morning,
+  Afternoon,
+  Evening,
+}
+
+enum Week {
+  M,
+  T,
+  W,
+  Th,
+  F,
+  Sa,
+  Su,
+}

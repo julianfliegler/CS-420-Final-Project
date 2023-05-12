@@ -1,6 +1,6 @@
 class Reward {
   String? name;
-  int? quantity;
+  String? quantity;
   String? unit;
 
   // constructor

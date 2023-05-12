@@ -20,4 +20,3 @@ class Habit {
       this.reminder,
       this.reward});
 }
-

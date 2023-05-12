@@ -9,8 +9,15 @@ enum Calendar {
 
 class FrequencySegment extends StatefulWidget {
   Calendar? calendarView = Calendar.day;
+  final Function? refreshParent;
 
-  FrequencySegment({super.key});
+  // getter for calendarView
+  Calendar? getCalendarView() {
+    print(calendarView);
+    return calendarView;
+  }
+
+  FrequencySegment({Key? key, this.refreshParent}) : super(key: key);
 
   @override
   State<FrequencySegment> createState() => _FrequencySegmentState();
@@ -29,10 +36,6 @@ class _FrequencySegmentState extends State<FrequencySegment> {
           value: Calendar.week,
           label: Text('Per Week'),
         ),
-        // ButtonSegment<Calendar>(
-        //     value: Calendar.month,
-        //     label: Text('Month'),
-        //     icon: Icon(Icons.calendar_view_month)),
       ],
       selected: <Calendar>{widget.calendarView!},
       onSelectionChanged: (Set<Calendar> newSelection) {
@@ -41,8 +44,10 @@ class _FrequencySegmentState extends State<FrequencySegment> {
           // selected at one time, so its value is always the first
           // item in the selected set.
           widget.calendarView = newSelection.first;
+          widget.refreshParent!();
         });
-        GoalSetterState().refresh();
+        // print parent widget
+        print(context);
       },
     );
   }

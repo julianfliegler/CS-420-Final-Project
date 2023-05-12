@@ -46,7 +46,6 @@ class ColorPickerState extends State<ColorPicker> {
   }
 
   _buildColorList() {
-    print("Selected = ${widget._selectedColor}");
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15),
       child: GridView.builder(
@@ -79,11 +78,5 @@ class ColorPickerState extends State<ColorPicker> {
         },
       ),
     );
-  }
-
-  displayColor() {
-    // print("Selected = ${widget._selectedColor}");
-    // get color from habit if it exists
-    // if it doesn't exist, display default color
   }
 }

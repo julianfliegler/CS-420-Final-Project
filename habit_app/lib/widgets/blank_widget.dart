@@ -1,6 +1,7 @@
 // ref: https://stackoverflow.com/questions/57864400/flutter-how-create-card-with-label-in-left-top
 
 import 'package:flutter/material.dart';
+import 'package:habit_app/all.dart';
 
 // ignore: must_be_immutable
 class BlankWidget extends StatefulWidget {
@@ -10,12 +11,16 @@ class BlankWidget extends StatefulWidget {
   Widget componentType;
   Widget? displayWidget;
   String? labelText;
+  Widget callingWidget;
+  final Function()? refreshParent;
 
   BlankWidget(
       {super.key,
       required this.componentType,
       this.displayWidget,
-      this.labelText});
+      this.labelText,
+      required this.callingWidget,
+      required this.refreshParent});
 }
 
 class BlankWidgetState extends State<BlankWidget> {
@@ -40,17 +45,18 @@ class BlankWidgetState extends State<BlankWidget> {
   }
 
   Widget _buildContainer() {
-    print(widget.displayWidget);
+    //print(widget.displayWidget);
     return Card(
       // outline
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(15.0),
         side: const BorderSide(
-          color: Color.fromARGB(255, 131, 131, 131),
+          color: Color.fromARGB(255, 138, 131, 145),
           width: 1.0,
         ),
       ),
       elevation: 5.0, // shadow
+      shadowColor: Color.fromARGB(255, 164, 159, 184),
       // size of product widgets
 
       child: Stack(
@@ -69,12 +75,14 @@ class BlankWidgetState extends State<BlankWidget> {
           Icons.edit,
           color: Color.fromRGBO(96, 103, 121, 1),
         ),
-        onPressed: () async {
-          final value = await Navigator.push(
+        onPressed: () {
+          Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => widget.componentType),
-          );
-          setState(() {});
+          ).then((_) {
+            setState(() {});
+            widget.refreshParent!();
+          });
         });
   }
 
@@ -85,13 +93,13 @@ class BlankWidgetState extends State<BlankWidget> {
           Icons.add,
           color: Color.fromRGBO(96, 103, 121, 1),
         ),
-        onPressed: () async {
-          final value = await Navigator.push(
+        onPressed: () {
+          Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => widget.componentType),
-          );
-          setState(() {
-            print("value: $value");
+          ).then((_) {
+            setState(() {});
+            widget.refreshParent!();
           });
         });
   }
@@ -112,26 +120,29 @@ class BlankWidgetState extends State<BlankWidget> {
 
   _buildLabel() {
     return Positioned(
-      top: 0,
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 6),
-        decoration: const BoxDecoration(
-            boxShadow: [
-              BoxShadow(
-                color: Color.fromARGB(255, 131, 131, 131),
-                blurRadius: 1.0,
-                spreadRadius: 0.0,
-                offset: Offset(0.0, 1.0),
+        top: 0,
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 6),
+          decoration: const BoxDecoration(
+              boxShadow: [
+                BoxShadow(
+                  color: Color.fromARGB(255, 155, 149, 173),
+                  blurRadius: 1.0,
+                  spreadRadius: 0.0,
+                  offset: Offset(0.5, 2.0),
+                ),
+              ],
+              color: Color.fromARGB(255, 215, 209, 231),
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(15),
+                bottomRight: Radius.circular(8),
+              ) // green shaped
               ),
-            ],
-            color: Color.fromARGB(255, 209, 209, 209),
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(8),
-              bottomRight: Radius.circular(8),
-            ) // green shaped
-            ),
-        child: Text(widget.labelText as String),
-      ),
-    );
+          child: Text(widget.labelText as String,
+              style: const TextStyle(
+                  color: Color.fromARGB(255, 35, 35, 75),
+                  fontSize: 15,
+                  fontWeight: FontWeight.w500)),
+        ));
   }
 }
