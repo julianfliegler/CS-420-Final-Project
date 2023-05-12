@@ -1,4 +1,14 @@
+/* 
+==============================
+*    Title: goal_setter.dart
+*    Author: Julian Fliegler
+*    Date: May 2023
+*    Purpose: Allows the user to set a goal for a habit.
+==============================
+*/
+
 // ref: https://api.flutter.dev/flutter/material/SegmentedButton-class.html
+// ignore_for_file: must_be_immutable
 import 'package:flutter/material.dart';
 import 'package:habit_app/all.dart';
 
@@ -30,11 +40,11 @@ class GoalSetterState extends State<GoalSetter> {
                 child:
                     Text('Set a goal', style: TextStyle(color: Colors.black))),
           ),
+          resizeToAvoidBottomInset:
+              false, // prevent keyboard from pushing up screen
           body: Column(
             children: [
-              // type of time selection
               SizedBox(
-                // fit button width to screen width
                 width: MediaQuery.of(context).size.width,
                 child: Center(
                     // size of the individual buttons itself
@@ -50,21 +60,23 @@ class GoalSetterState extends State<GoalSetter> {
                       // size of the individual buttons itself
                       child: SizedBox(
                           width: MediaQuery.of(context).size.width,
-                          child: // get calendar view
-                              calendarView == Calendar.day
-                                  ? _buildDayTimeSelection()
-                                  : _buildWeekSelection()))),
+                          // display either day or week selection
+                          child: calendarView == Calendar.day
+                              ? _buildDayTimeSelection()
+                              : _buildWeekSelection()))),
               const SizedBox(height: 30), // spacing
+              // quantity and unit
               _buildQuantityField(),
               const SizedBox(height: 20), // spacing
               _buildUnitField(),
             ],
           ),
+          // display done button
           floatingActionButton: const MyApp().buildDoneButton(context)),
     );
   }
 
-  _buildFrequencySelection() {
+  Widget _buildFrequencySelection() {
     return SegmentedButton<Calendar>(
       segments: const <ButtonSegment<Calendar>>[
         ButtonSegment<Calendar>(
@@ -76,20 +88,20 @@ class GoalSetterState extends State<GoalSetter> {
           label: Text('Per Week'),
         ),
       ],
+      // default selection
       selected: <Calendar>{calendarView},
       onSelectionChanged: (Set<Calendar> newSelection) {
         setState(() {
-          // By default there is only a single segment that can be
-          // selected at one time, so its value is always the first
-          // item in the selected set.
+          // By default there is only a single segment that can be selected at one time, so its value is always the first item in the selected set.
           calendarView = newSelection.first;
+          // update the habit's goal
           widget.habit?.goal?.calendarView = calendarView;
         });
       },
     );
   }
 
-  _buildDayTimeSelection() {
+  Widget _buildDayTimeSelection() {
     return SegmentedButton<DayTime>(
       segments: const <ButtonSegment<DayTime>>[
         ButtonSegment<DayTime>(
@@ -109,6 +121,7 @@ class GoalSetterState extends State<GoalSetter> {
       onSelectionChanged: (Set<DayTime> newSelection) {
         setState(() {
           daytimeSelection = newSelection;
+          // update the habit's goal
           widget.habit?.goal?.daytimeSelection = daytimeSelection;
         });
       },
@@ -116,7 +129,7 @@ class GoalSetterState extends State<GoalSetter> {
     );
   }
 
-  _buildWeekSelection() {
+  Widget _buildWeekSelection() {
     return SegmentedButton<Week>(
       segments: const <ButtonSegment<Week>>[
         ButtonSegment<Week>(
@@ -152,9 +165,11 @@ class GoalSetterState extends State<GoalSetter> {
       onSelectionChanged: (Set<Week> newSelection) {
         setState(() {
           weekSelection = newSelection;
+          // update the habit's goal
           widget.habit?.goal?.weekSelection = weekSelection;
         });
       },
+      // allow multiple selections
       multiSelectionEnabled: true,
     );
   }
@@ -181,6 +196,7 @@ class GoalSetterState extends State<GoalSetter> {
         ),
         onChanged: (value) {
           if (value != "") {
+            // update the habit's goal
             widget.habit?.goal?.quantity = value;
           } else {
             // if user deletes all text

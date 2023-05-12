@@ -1,5 +1,14 @@
-// ref: https://stackoverflow.com/questions/57864400/flutter-how-create-card-with-label-in-left-top
+/* 
+==============================
+*    Title: blank_widget.dart
+*    Author: Julian Fliegler
+*    Date: May 2023
+*    Purpose: Creates a blank widget that can be used to display habit components.
+==============================
+*/
 
+// ref: https://stackoverflow.com/questions/57864400/flutter-how-create-card-with-label-in-left-top
+// ignore_for_file: unused_import
 import 'package:flutter/material.dart';
 import 'package:habit_app/all.dart';
 
@@ -56,7 +65,7 @@ class BlankWidgetState extends State<BlankWidget> {
         ),
       ),
       elevation: 5.0, // shadow
-      shadowColor: Color.fromARGB(255, 164, 159, 184),
+      shadowColor: const Color.fromARGB(255, 164, 159, 184),
       // size of product widgets
 
       child: Stack(

@@ -1,10 +1,10 @@
-// pages/screens
+// pages
 export 'screens/page_controller.dart';
 export 'screens/home_page.dart';
 export 'screens/habit_page.dart';
 export 'screens/progress_page.dart';
 
-// pickers
+// pickers/setters
 export 'screens/setters/color_picker.dart';
 export 'screens/setters/goal_setter.dart';
 export 'screens/setters/icon_picker.dart';
@@ -20,13 +20,15 @@ export 'models/reward.dart';
 // widgets
 export 'widgets/habit_widget.dart';
 export 'widgets/blank_widget.dart';
-// export 'widgets/frequency_segment.dart';
-export 'widgets/timeperiod_segment.dart';
-export 'widgets/week_segment.dart';
 
+// utils
+export 'utils/calendar_utils.dart';
+
+// main
 export 'main.dart';
-export 'utils.dart';
 
+// enums
+// ignore_for_file: constant_identifier_names
 enum Calendar {
   day,
   week,

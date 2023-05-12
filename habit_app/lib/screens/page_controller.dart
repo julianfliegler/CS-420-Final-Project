@@ -3,6 +3,7 @@
 *    Title: page_controller.dart
 *    Author: Julian Fliegler
 *    Date: May 2023
+*    Purpose: Manages navigation bar.
 ==============================
 */
 
@@ -20,7 +21,8 @@ class MyPageController extends StatefulWidget {
 class _MyPageControllerState extends State<MyPageController> {
   int _selectedIndex = 0;
   final _pageOptions = [
-    HomePage(),
+    const HomePage(),
+    HabitPage(),
     const ProgressPage(),
   ];
 
@@ -32,7 +34,6 @@ class _MyPageControllerState extends State<MyPageController> {
 
   @override
   Widget build(BuildContext context) {
-    print("build page controller");
     return Scaffold(
       backgroundColor: const Color(0xfffdfafd),
       body: Center(
@@ -42,7 +43,7 @@ class _MyPageControllerState extends State<MyPageController> {
         alignment: const FractionalOffset(.5, 1.0),
         children: [
           BottomNavigationBar(
-            backgroundColor: Color.fromARGB(210, 255, 250, 250),
+            backgroundColor: const Color.fromARGB(210, 255, 250, 250),
             elevation: 0,
             items: const <BottomNavigationBarItem>[
               BottomNavigationBarItem(
@@ -54,6 +55,16 @@ class _MyPageControllerState extends State<MyPageController> {
                   padding: EdgeInsets.only(right: 50),
                   child: Icon(Icons.home, size: 50),
                 ),
+                label: '',
+              ),
+              BottomNavigationBarItem(
+                icon: Padding(
+                  padding: EdgeInsets.only(left: 3),
+                  child: Icon(Icons.add_circle_outline, size: 45),
+                ),
+                activeIcon: Padding(
+                    padding: EdgeInsets.only(left: 3),
+                    child: Icon(Icons.add_circle, size: 50)),
                 label: '',
               ),
               BottomNavigationBarItem(
@@ -71,25 +82,6 @@ class _MyPageControllerState extends State<MyPageController> {
             currentIndex: _selectedIndex,
             selectedItemColor: Colors.black,
             onTap: _onItemTapped,
-          ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 30.0),
-            // add habit button
-
-            child: FloatingActionButton(
-                backgroundColor: Colors.black,
-                onPressed: () async {
-                  final value = await Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const HabitPage()),
-                  );
-                  setState(() {
-                    // print current route
-                    print(ModalRoute.of(context)!.settings.name);
-                  });
-                },
-                child: const Icon(Icons.add_outlined,
-                    size: 40, color: Colors.white)),
           ),
         ],
       ),

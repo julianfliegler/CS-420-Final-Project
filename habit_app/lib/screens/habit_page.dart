@@ -1,8 +1,21 @@
+/* 
+==============================
+*    Title: habit_page.dart
+*    Author: Julian Fliegler
+*    Date: May 2023
+*    Purpose: Displays and allows user to edit information for a habit.
+==============================
+*/
+
+// ignore_for_file: must_be_immutable, avoid_print
 import 'package:flutter/material.dart';
 import 'package:habit_app/all.dart';
 
 class HabitPage extends StatefulWidget {
-  const HabitPage({Key? key}) : super(key: key);
+  Habit? habit;
+
+  // constructor
+  HabitPage({Key? key, this.habit}) : super(key: key);
 
   @override
   State<HabitPage> createState() => HabitPageState();
@@ -13,71 +26,82 @@ class HabitPageState extends State<HabitPage> {
   Reminder thisReminder = Reminder();
   Reward thisReward = Reward();
   late Habit thisHabit;
+  bool isEditing = false;
 
   @override
   void initState() {
     super.initState();
-    thisHabit =
-        Habit(goal: thisGoal, reminder: thisReminder, reward: thisReward);
+    // if habit is null, create new habit
+    if (widget.habit == null) {
+      thisHabit =
+          Habit(goal: thisGoal, reminder: thisReminder, reward: thisReward);
+    } else {
+      thisHabit = widget.habit as Habit;
+      isEditing = true;
+    }
   }
 
   refresh() {
     if (mounted) {
       setState(() {});
     } else {
-      print("$widget not mounted");
+      debugPrint("$widget not mounted");
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    print("build habit page");
     return MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: ThemeData(useMaterial3: true),
         home: Scaffold(
             appBar: AppBar(
-              // make back arrow black
               iconTheme: const IconThemeData(color: Colors.black),
               elevation: 0,
               backgroundColor: Colors.transparent,
               title: const Center(
                   child: Text('Habit', style: TextStyle(color: Colors.black))),
             ),
+            resizeToAvoidBottomInset:
+                false, // prevent keyboard from pushing up screen
             body: Padding(
               padding: const EdgeInsets.all(20.0),
-              child: Column(
-                //  input field
+              child: ListView(
+                scrollDirection: Axis.vertical,
+                shrinkWrap: true, // shrink to fit content
                 children: [
-                  Flexible(child: _buildNameField()), // name
+                  _buildNameField(), // name
                   const SizedBox(height: 20), // spacing
                   Row(mainAxisSize: MainAxisSize.max, children: [
-                    Expanded(child: _buildColorPicker(context)),
-                    Expanded(child: _buildIconPicker(context))
+                    Expanded(child: _buildColorPicker(context)), // color
+                    Expanded(child: _buildIconPicker(context)) // icon
                   ]),
                   const SizedBox(height: 20), // spacing
-                  Flexible(child: _buildGoalSetter()),
+                  Flexible(child: _buildGoalSetter()), // goal
                   const SizedBox(height: 20), // spacing
-                  Flexible(child: _buildReminderSetter()),
+                  Flexible(child: _buildReminderSetter()), // reminder
                   const SizedBox(height: 20), // spacing
-                  Flexible(child: _buildRewardSetter()),
+                  Flexible(child: _buildRewardSetter()), // reward
                 ],
               ),
             ),
             floatingActionButton: FloatingActionButton(
-              // round corners
               shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(28))),
+                  borderRadius:
+                      BorderRadius.all(Radius.circular(28))), // round corners
               onPressed: () {
-                // create new habit widget
-                HabitWidget newHabitWidget = HabitWidget(
-                  habit: thisHabit,
-                );
-                // add to list of habits
-                HomePage().addHabit(newHabitWidget);
-                // reload home page
-                HomePageState().refresh();
-                Navigator.pop(context);
+                // if not editing, user is creating a new habit
+                if (!isEditing) {
+                  // create new habit widget
+                  HabitWidget newHabitWidget = HabitWidget(
+                    habit: thisHabit,
+                  );
+                  // add to list of habits on home page
+                  const HomePage().addHabit(newHabitWidget);
+                }
+                // go back to home page
+                Navigator.of(context).pushNamedAndRemoveUntil(
+                    '/', (Route<dynamic> route) => false);
               },
               backgroundColor: Colors.black,
               child: const Icon(Icons.done, color: Colors.white),
@@ -86,7 +110,7 @@ class HabitPageState extends State<HabitPage> {
 
   Widget _buildNameField() {
     return SizedBox(
-      width: MediaQuery.of(context).size.width * 0.89,
+      width: MediaQuery.of(context).size.width * 0.87,
       child: TextFormField(
         decoration: const InputDecoration(
           // black border
@@ -117,10 +141,10 @@ class HabitPageState extends State<HabitPage> {
 
   _buildColorPicker(context) {
     return BlankWidget(
-        callingWidget: widget,
-        refreshParent: refresh,
+        callingWidget: widget, // for tracking route
+        refreshParent: refresh, // for updating state
         componentType: ColorPicker(
-          habit: thisHabit,
+          habit: thisHabit, // pass habit to color picker
         ),
         displayWidget: displayColor(),
         labelText: "Color");
@@ -179,9 +203,10 @@ class HabitPageState extends State<HabitPage> {
         decoration: BoxDecoration(
           // black border
           border: Border.all(
-            color: Color.fromARGB(255, 96, 91, 101),
+            color: const Color.fromARGB(255, 96, 91, 101),
             width: 2,
           ),
+          // if color is null, display white
           color: thisHabit.color ?? Colors.white,
           borderRadius: BorderRadius.circular(50),
         ),
@@ -192,10 +217,13 @@ class HabitPageState extends State<HabitPage> {
   displayIcon() {
     return Padding(
       padding: const EdgeInsets.only(left: 57, top: 10, bottom: 10),
-      child: Container(
+      child: SizedBox(
         width: 60,
         height: 60,
-        child: thisHabit.icon,
+        child: Icon(
+          thisHabit.icon?.icon,
+          size: 50,
+        ),
       ),
     );
   }
@@ -203,6 +231,7 @@ class HabitPageState extends State<HabitPage> {
   displayGoal() {
     String selectedDayTimes = '';
     String selectedDays = '';
+    // turn sets into strings
     // ignore: avoid_function_literals_in_foreach_calls
     thisHabit.goal?.daytimeSelection.forEach((element) {
       selectedDayTimes += "${element.name} ";
@@ -212,6 +241,15 @@ class HabitPageState extends State<HabitPage> {
       selectedDays += "${element.name} ";
     });
 
+    // reformat edge cases
+    if (selectedDays == "M T W Th F Sa Su ") {
+      selectedDays = "Daily";
+    } else if (selectedDays == "M T W Th F ") {
+      selectedDays = "Weekdays";
+    } else if (selectedDays == "Sa Su ") {
+      selectedDays = "Weekends";
+    }
+
     return Padding(
       padding: const EdgeInsets.only(left: 57, top: 10, bottom: 10),
       child: SizedBox(
@@ -219,6 +257,7 @@ class HabitPageState extends State<HabitPage> {
         child: Column(
           children: [
             Text(
+                // if quantity is null, display empty string
                 thisHabit.goal?.quantity == null
                     ? ""
                     : "${thisHabit.goal?.quantity.toString()} ${thisHabit.goal?.unit}",
@@ -232,6 +271,7 @@ class HabitPageState extends State<HabitPage> {
                 child: Padding(
                     padding: const EdgeInsets.symmetric(
                         vertical: 5, horizontal: 8.0),
+                    // if daytime selection is null, display empty string
                     child: selectedDayTimes == 'Morning '
                         ? Container()
                         : Text(selectedDayTimes))),
@@ -246,6 +286,7 @@ class HabitPageState extends State<HabitPage> {
                 child: Padding(
                   padding:
                       const EdgeInsets.symmetric(vertical: 5, horizontal: 8.0),
+                  // if week selection is null, display empty string
                   child: selectedDays == 'M '
                       ? Container()
                       : Text(selectedDays,
@@ -259,6 +300,7 @@ class HabitPageState extends State<HabitPage> {
 
   displayReminder() {
     String selectedDays = '';
+    // turn set into string
     // ignore: avoid_function_literals_in_foreach_calls
     thisHabit.reminder?.weekSelection.forEach((element) {
       selectedDays += "${element.name} ";
@@ -270,6 +312,7 @@ class HabitPageState extends State<HabitPage> {
         child: Column(
           children: [
             Text(
+                // if time is null, display empty string
                 thisHabit.reminder?.time == null
                     ? ""
                     : "${thisHabit.reminder?.time.toString()}",
@@ -285,6 +328,7 @@ class HabitPageState extends State<HabitPage> {
                 child: Padding(
                   padding:
                       const EdgeInsets.symmetric(vertical: 5, horizontal: 8.0),
+                  // if week selection is null, display empty string
                   child: selectedDays == 'M '
                       ? Container()
                       : Text(selectedDays,
@@ -304,13 +348,12 @@ class HabitPageState extends State<HabitPage> {
         child: Column(
           children: [
             Text(
+                // if reward name is null, display empty string
                 thisHabit.reward?.name == null
                     ? ""
                     : "${thisHabit.reward?.name.toString()}",
                 style: const TextStyle(fontSize: 20)),
-
             const SizedBox(height: 5), // spacing
-
             Container(
               // gray rounded rectangle
               decoration: BoxDecoration(
@@ -321,6 +364,7 @@ class HabitPageState extends State<HabitPage> {
                 padding:
                     const EdgeInsets.symmetric(vertical: 5, horizontal: 8.0),
                 child: Text(
+                    // if reward quantity is null, display empty string
                     thisHabit.reward?.quantity == null
                         ? ""
                         : "${thisHabit.reward?.quantity.toString()} ${thisHabit.reward?.unit} streak",

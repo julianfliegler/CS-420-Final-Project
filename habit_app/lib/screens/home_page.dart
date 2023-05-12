@@ -1,9 +1,24 @@
+/* 
+==============================
+*    Title: home_page.dart
+*    Author: Julian Fliegler
+*    Date: May 2023
+*    Purpose: Default page. Displays a calendar and user's list of habits.
+==============================
+*/
+
+// ignore_for_file: avoid_print
 import 'package:flutter/material.dart';
 import 'package:habit_app/all.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class HomePage extends StatefulWidget {
   static List<HabitWidget>? habitList;
+
+  List<HabitWidget>? getHabitList() {
+    return habitList;
+  }
+
   addHabit(HabitWidget habit) {
     habitList ??= []; // initialize if null
     habitList?.add(habit);
@@ -13,10 +28,7 @@ class HomePage extends StatefulWidget {
     habitList?.remove(habit);
   }
 
-  // getter
-  List<HabitWidget>? getHabitList() {
-    return habitList;
-  }
+  const HomePage({super.key});
 
   @override
   State<HomePage> createState() => HomePageState();
@@ -37,23 +49,29 @@ class HomePageState extends State<HomePage> {
         debugShowCheckedModeBanner: false,
         theme: ThemeData(useMaterial3: true),
         home: Scaffold(
-          body: Column(
-            children: [
-              _buildCalendar(),
-              Center(
-                child: widget.getHabitList() != null
-                    ? _buildHabitList(
-                        widget.getHabitList() as List<HabitWidget>)
-                    : Container(),
-              ),
-            ],
+          body: SingleChildScrollView(
+            // allows scrolling
+            physics: const BouncingScrollPhysics(), // bounce effect
+            child: Column(
+              children: [
+                _buildCalendar(), // calendar
+                Center(
+                  // list of habits
+                  child: widget.getHabitList() != null
+                      ? _buildHabitList(
+                          widget.getHabitList() as List<HabitWidget>)
+                      : Container(),
+                )
+              ],
+            ),
           ),
         ));
   }
 
   Widget _buildHabitList(List<HabitWidget> habitList) {
     return ListView.builder(
-        shrinkWrap: true,
+        shrinkWrap: true, // shrink to fit
+        scrollDirection: Axis.vertical, // scroll vertically
         itemCount: habitList.length,
         itemBuilder: (context, index) {
           return habitList[index];

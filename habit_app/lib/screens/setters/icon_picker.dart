@@ -1,3 +1,12 @@
+/* 
+==============================
+*    Title: icon_picker.dart
+*    Author: Julian Fliegler
+*    Date: May 2023
+*    Purpose: Allows the user to pick an icon for a habit.
+==============================
+*/
+
 import 'package:flutter/material.dart';
 import 'package:habit_app/all.dart';
 import 'package:flutter_iconpicker/flutter_iconpicker.dart';
@@ -18,6 +27,7 @@ class IconPickerState extends State<IconPicker> {
   @override
   void initState() {
     super.initState();
+    // wait for the widget to build before picking an icon
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       _pickIcon();
     });
@@ -28,10 +38,9 @@ class IconPickerState extends State<IconPicker> {
         iconPackModes: [IconPack.cupertino]);
 
     _icon = Icon(icon);
+    // set the icon for the habit
     widget.habit.icon = _icon;
     setState(() {});
-
-    debugPrint('Picked Icon:  $icon');
   }
 
   @override
@@ -41,7 +50,6 @@ class IconPickerState extends State<IconPicker> {
         theme: ThemeData(useMaterial3: true),
         home: Scaffold(
             appBar: AppBar(
-              // make back arrow black
               iconTheme: const IconThemeData(color: Colors.black),
               elevation: 0,
               backgroundColor: Colors.transparent,
@@ -49,17 +57,22 @@ class IconPickerState extends State<IconPicker> {
                   child: Text('Pick an icon',
                       style: TextStyle(color: Colors.black))),
             ),
+            resizeToAvoidBottomInset:
+                false, // prevent keyboard from pushing up screen
             body: Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.all(50.0),
-                    child: AnimatedSwitcher(
-                      duration: const Duration(milliseconds: 300),
-                      child: _icon ?? Container(),
-                    ),
+                  // switch between the old and new icon
+                  AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 300),
+                    child: Padding(
+                        padding: const EdgeInsets.only(bottom: 50),
+                        child: Icon(
+                          _icon?.icon,
+                          size: 100,
+                        )),
                   ),
                   const SizedBox(height: 10),
                   ElevatedButton(
@@ -69,6 +82,7 @@ class IconPickerState extends State<IconPicker> {
                 ],
               ),
             ),
+            // done button
             floatingActionButton: const MyApp().buildDoneButton(context)));
   }
 }

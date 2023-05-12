@@ -1,3 +1,12 @@
+/* 
+==============================
+*    Title: habit.dart
+*    Author: Julian Fliegler
+*    Date: May 2023
+*    Purpose: Holds information about a habit.
+==============================
+*/
+
 import 'package:flutter/material.dart';
 import 'package:habit_app/all.dart';
 

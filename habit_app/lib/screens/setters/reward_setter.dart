@@ -1,3 +1,13 @@
+/* 
+==============================
+*    Title: reward_setter.dart
+*    Author: Julian Fliegler
+*    Date: May 2023
+*    Purpose: Allows user to set a reward for a habit.
+==============================
+*/
+
+// ignore_for_file: must_be_immutable
 import 'package:flutter/material.dart';
 import 'package:habit_app/all.dart';
 
@@ -18,7 +28,6 @@ class _RewardSetterState extends State<RewardSetter> {
         theme: ThemeData(useMaterial3: true),
         home: Scaffold(
           appBar: AppBar(
-            // make back arrow black
             iconTheme: const IconThemeData(color: Colors.black),
             elevation: 0,
             backgroundColor: Colors.transparent,
@@ -26,28 +35,30 @@ class _RewardSetterState extends State<RewardSetter> {
                 child: Text('Set a reward',
                     style: TextStyle(color: Colors.black))),
           ),
+          resizeToAvoidBottomInset:
+              false, // prevent keyboard from pushing up screen
           body: Center(
-            child: Column(children: [
-              const SizedBox(height: 20), // spacing
-              const Text("I will get",
-                  style: TextStyle(
-                      fontSize: 30,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black)),
-              const SizedBox(height: 20), // spacing
-
-              _buildRewardField(),
-              const SizedBox(height: 40), // spacing
-              const Text("after",
-                  style: TextStyle(
-                      fontSize: 30,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black)),
-              const SizedBox(height: 20), // spacing
-              _buildQuantityField(),
-              const SizedBox(height: 20), // spacing
-              _buildUnitField(),
-            ]),
+            child: SingleChildScrollView(
+              child: Column(children: [
+                const Text("I will get",
+                    style: TextStyle(
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black)),
+                const SizedBox(height: 20), // spacing
+                _buildRewardField(),
+                const SizedBox(height: 40), // spacing
+                const Text("after",
+                    style: TextStyle(
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black)),
+                const SizedBox(height: 20), // spacing
+                _buildQuantityField(),
+                const SizedBox(height: 20), // spacing
+                _buildUnitField(),
+              ]),
+            ),
           ),
           floatingActionButton: const MyApp().buildDoneButton(context),
         ));

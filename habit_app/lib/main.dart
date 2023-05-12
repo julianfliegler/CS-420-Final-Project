@@ -1,3 +1,12 @@
+/* 
+==============================
+*    Title: main.dart
+*    Author: Julian Fliegler
+*    Date: May 2023
+*    Purpose: Runs the app.
+==============================
+*/
+
 import 'package:flutter/material.dart';
 import 'package:habit_app/all.dart';
 
@@ -10,9 +19,18 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: MyPageController(),
+      initialRoute: '/',
+      routes: {
+        // When navigating to the "/" route, build the FirstScreen widget.
+        '/home': (context) => const HomePage(),
+        // When navigating to the "/second" route, build the SecondScreen widget.
+        '/progress': (context) => const ProgressPage(),
+      },
+      home: const Scaffold(
+        body: MyPageController(),
+      ),
     );
   }
 

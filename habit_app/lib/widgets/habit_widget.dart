@@ -1,3 +1,12 @@
+/* 
+==============================
+*    Title: habit_widget.dart
+*    Author: Julian Fliegler
+*    Date: May 2023
+*    Purpose: Creates a widget to display a habit.
+==============================
+*/
+
 import 'package:flutter/material.dart';
 import 'package:habit_app/all.dart';
 
@@ -51,17 +60,15 @@ class HabitWidgetState extends State<HabitWidget> {
       onDismissed: (direction) {
         // remove the item from the list
         setState(() {
-          // remove from list
-          HomePage().removeHabit(widget);
-          // reload home page
+          const HomePage().removeHabit(widget);
           HomePageState().refresh();
         });
       },
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+        // padding between cards
+        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 0),
         child: Card(
           color: const Color.fromARGB(255, 255, 255, 255),
-          // outline
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15.0),
             side: const BorderSide(
@@ -69,19 +76,22 @@ class HabitWidgetState extends State<HabitWidget> {
               width: 1.0,
             ),
           ),
-          elevation: 5.0, // shadow
-          // size of product widgets
-          child: SizedBox(
-            height: 70,
-            width: MediaQuery.of(context).size.width, // 100% of screen width
-            child: ListTile(
-              leading: _buildColorIcon(),
-              title: Text(widget.habit.name ?? "NULL",
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 25,
-                  )),
-              subtitle: _buildSubtitle(),
+          elevation: 5.0,
+          // padding inside card
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 4),
+            child: SizedBox(
+              height: 70,
+              width: MediaQuery.of(context).size.width, // 100% of screen width
+              child: ListTile(
+                leading: _buildColorIcon(),
+                title: Text(widget.habit.name ?? "",
+                    style: const TextStyle(
+                      fontSize: 25,
+                    )),
+                subtitle: _buildSubtitle(),
+                trailing: _buildEditButton(),
+              ),
             ),
           ),
         ),
@@ -96,34 +106,46 @@ class HabitWidgetState extends State<HabitWidget> {
     widget.habit.goal?.weekSelection.forEach((element) {
       selectedDays += "${element.name} ";
     });
-    return Text(
-        "${widget.habit.goal?.quantity} ${widget.habit.goal?.unit} | $selectedDays",
-        style: const TextStyle(
-          fontWeight: FontWeight.bold,
-          fontSize: 15,
-        ));
+
+    // reformat edge cases
+    if (selectedDays == "M T W Th F Sa Su ") {
+      selectedDays = "Daily";
+    } else if (selectedDays == "M T W Th F ") {
+      selectedDays = "Weekdays";
+    } else if (selectedDays == "Sa Su ") {
+      selectedDays = "Weekends";
+    }
+
+    return widget.habit.goal?.quantity == null ||
+            widget.habit.goal?.unit == null ||
+            widget.habit.goal?.weekSelection == null
+        ? const Text(
+            "",
+          )
+        : Text(
+            "${widget.habit.goal?.quantity} ${widget.habit.goal?.unit} | $selectedDays",
+            style: const TextStyle(
+              fontSize: 16,
+            ));
   }
 
-  // Widget _buildEditButton() {
-  //   return IconButton(
-  //     icon: const Icon(
-  //       Icons.edit,
-  //       color: Color.fromRGBO(96, 103, 121, 1),
-  //     ),
-  //     onPressed: () {
-  //       showDialog(
-  //           context: context,
-  //           builder: (context) {
-  //             return EditWidget(
-  //               pantryItem: widget.pantryItem,
-  //               callingWidget: widget,
-  //               updateProductWidget: refresh,
-  //               refreshPantryList: widget.refreshPantryList,
-  //             );
-  //           });
-  //     },
-  //   );
-  // }
+  Widget _buildEditButton() {
+    return IconButton(
+      icon: const Icon(
+        Icons.edit,
+        color: Color.fromRGBO(96, 103, 121, 1),
+      ),
+      onPressed: () {
+        showDialog(
+            context: context,
+            builder: (context) {
+              return HabitPage(
+                habit: widget.habit,
+              );
+            });
+      },
+    );
+  }
 
   Widget _buildColorIcon() {
     return Container(
@@ -132,16 +154,14 @@ class HabitWidgetState extends State<HabitWidget> {
       decoration: BoxDecoration(
         // black outline
         border: Border.all(
-          color: Colors.black,
+          color: const Color.fromARGB(255, 138, 131, 145),
           width: 2,
         ),
         color: widget.habit.color,
         borderRadius: BorderRadius.circular(30),
       ),
-      child: Padding(
-        padding: const EdgeInsets.only(bottom: 4.0),
-        child: widget.habit.icon,
-      ),
+      child: Center(
+          child: Icon(widget.habit.icon?.icon, color: Colors.black, size: 25)),
     );
   }
 }
